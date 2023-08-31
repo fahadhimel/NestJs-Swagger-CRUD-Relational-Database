@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 import { CreateUserParams, UpdateUserParams } from 'src/utils/types';
@@ -11,26 +11,50 @@ export class UsersService {
   ) {}
 
   findUsers() {
-    return this.userRepository.find();
+    try {
+      return this.userRepository.find();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  //   findoneUser(id: number) {
-  //     return this.userRepository.findOne({ id });
-  //   }
+  async findOneUser(id: number) {
+    try {
+      console.log(id);
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) throw new Error('User Not Found');
+      return user;
+    } catch (err) {
+      console.log(err.message);
+      return new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+  }
 
   createUser(userDetails: CreateUserParams) {
-    const newUser = this.userRepository.create({
-      ...userDetails,
-      createAT: new Date(),
-    });
-    return this.userRepository.save(newUser);
+    try {
+      const newUser = this.userRepository.create({
+        ...userDetails,
+        createAT: new Date(),
+      });
+      return this.userRepository.save(newUser);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   updateUser(id: number, updateUserDatails: UpdateUserParams) {
-    return this.userRepository.update({ id }, { ...updateUserDatails });
+    try {
+      return this.userRepository.update({ id }, { ...updateUserDatails });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   deleteUser(id: number) {
-    return this.userRepository.delete({ id });
+    try {
+      return this.userRepository.delete({ id });
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

@@ -23,14 +23,18 @@ export class UsersController {
     return this.userService.findUsers();
   }
 
-  //   @Get(':id')
-  //   async findOneUser(@Param('id', ParseIntPipe) id: number) {
-  //     await this.userService.findoneUser(id);
-  //   }
+  @Get(':id')
+  findOneUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOneUser(id);
+  }
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
-    this.userService.createUser(createUserDto);
+    try {
+      this.userService.createUser(createUserDto);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   @Put(':id')

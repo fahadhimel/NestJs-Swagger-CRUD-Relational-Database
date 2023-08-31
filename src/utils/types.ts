@@ -11,3 +11,7 @@ export type UpdateUserParams = {
   email: string;
   password: string;
 };
+
+export type getIdUserParams = {
+  id: number;
+};
